@@ -18,7 +18,7 @@ deployment:
     - php artisan route:cache
     - php artisan view:cache
   production:
-    document-root: /home/bimstudi/tutorial.bimstudies.com/public
+    document-root: tutorial.bimstudies.com
 environment:
   development:
     APP_ENV: local
