@@ -8,7 +8,6 @@
  *
  * Security: DELETE this file after successful deployment.
  */
-
 $token = $_GET['token'] ?? '';
 $expectedToken = 'ygsoftx-deploy-9f3a7b2c';
 
@@ -25,13 +24,14 @@ if ($token !== $expectedToken) {
 function runCommand($command)
 {
     // Method 1: shell_exec (most common on shared hosting)
-    if (function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')))) {
-        $output = @shell_exec($command . ' 2>&1');
+    if (function_exists('shell_exec') && ! in_array('shell_exec', explode(',', ini_get('disable_functions')))) {
+        $output = @shell_exec($command.' 2>&1');
+
         return $output ?: '';
     }
 
     // Method 2: proc_open (works when shell_exec is disabled)
-    if (function_exists('proc_open') && !in_array('proc_open', explode(',', ini_get('disable_functions')))) {
+    if (function_exists('proc_open') && ! in_array('proc_open', explode(',', ini_get('disable_functions')))) {
         $descriptors = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
@@ -44,14 +44,16 @@ function runCommand($command)
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);
+
             return $output;
         }
     }
 
     // Method 3: exec
-    if (function_exists('exec') && !in_array('exec', explode(',', ini_get('disable_functions')))) {
+    if (function_exists('exec') && ! in_array('exec', explode(',', ini_get('disable_functions')))) {
         $output = [];
-        @exec($command . ' 2>&1', $output, $returnCode);
+        @exec($command.' 2>&1', $output, $returnCode);
+
         return implode("\n", $output);
     }
 
@@ -60,7 +62,7 @@ function runCommand($command)
 }
 
 // Ensure we're in the Laravel root
-chdir(__DIR__ . '/..');
+chdir(__DIR__.'/..');
 
 $output = [];
 $commands = [
@@ -84,20 +86,20 @@ foreach ($commands as $step => $command) {
     $output[] = [
         'step' => $step,
         'command' => $command,
-        'duration' => $duration . 's',
+        'duration' => $duration.'s',
         'output' => $result ?: '(no output)',
     ];
 }
 
 header('Content-Type: text/plain; charset=utf-8');
 echo "YG SoftX Deployment Results\n";
-echo str_repeat('=', 60) . "\n\n";
+echo str_repeat('=', 60)."\n\n";
 
 foreach ($output as $result) {
     echo "{$result['step']}: {$result['command']} ({$result['duration']})\n";
-    echo str_repeat('-', 60) . "\n";
-    echo $result['output'] . "\n\n";
+    echo str_repeat('-', 60)."\n";
+    echo $result['output']."\n\n";
 }
 
-echo str_repeat('=', 60) . "\n";
+echo str_repeat('=', 60)."\n";
 echo "IMPORTANT: DELETE deploy.php from public/ after successful deployment!\n";
