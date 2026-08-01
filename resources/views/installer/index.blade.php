@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            {{-- Database Settings }}
+            {{-- Database Settings --}}
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Database Configuration</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -85,7 +85,7 @@
                 </div>
             </div>
 
-            {{-- Admin Account }}
+            {{-- Admin Account --}}
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Admin Account</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            {{-- Requirements Summary }}
+            {{-- Requirements Summary --}}
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Server Requirements</h3>
                 <div class="mt-4 space-y-2">

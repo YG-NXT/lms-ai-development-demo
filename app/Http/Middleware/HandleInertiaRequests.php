@@ -53,7 +53,12 @@ class HandleInertiaRequests extends Middleware
             }
         }
 
-        $businessSettings = \App\Models\BusinessSetting::all()->pluck('value', 'key')->toArray();
+        $businessSettings = [];
+        try {
+            $businessSettings = \App\Models\BusinessSetting::all()->pluck('value', 'key')->toArray();
+        } catch (\Exception) {
+            // Tables may not exist during initial installation
+        }
         $brandingConfig = config('branding.theme');
 
         // Prioritize name from settings
@@ -98,9 +103,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'admin' => [
                 'path' => config('installer.admin_path', 'admin'),
-                'pending_enrollments_count' => $user && ($user->isSuperAdmin() || $user->can('enrollment_management'))
-                    ? \App\Models\Enrollment::where('status', \App\Enums\EnrollmentStatus::PENDING)->count()
-                    : 0,
+                'pending_enrollments_count' => 0,
             ],
             'app_mode' => env('APP_MODE', 'production'),
         ];

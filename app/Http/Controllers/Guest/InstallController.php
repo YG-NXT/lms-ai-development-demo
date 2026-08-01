@@ -26,7 +26,7 @@ class InstallController extends Controller
         return view('installer.index', ['requirements' => $this->checkRequirements()]);
     }
 
-    public function install(Request $request)
+    public function store(Request $request)
     {
         if (config('installer.installed', false)) {
             return redirect('/');
@@ -87,6 +87,10 @@ class InstallController extends Controller
 
     public function success()
     {
+        if (! config('installer.installed', false)) {
+            return redirect()->route('install');
+        }
+
         return view('installer.success');
     }
 
@@ -110,6 +114,7 @@ class InstallController extends Controller
         return [
             'pass' => $phpOk && $extensionOk && $writableOk,
             'php_version' => PHP_VERSION,
+            'php_required' => $this->requirements['php'],
             'php_ok' => $phpOk,
             'extensions' => $extensions,
             'extension_ok' => $extensionOk,
