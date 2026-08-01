@@ -1,10 +1,8 @@
 ---
 deployment:
   tasks:
-    # Create .env if it does not exist
-    - cp -f .env.example .env 2>/dev/null || true
-    # Generate APP_KEY if not set
-    - php artisan key:generate --force --show 2>/dev/null || true
+    
+    pre_deploy:
     # Install PHP dependencies
     - composer install --no-dev --prefer-dist --optimize-autoloader
     # Clear stale caches
@@ -20,5 +18,5 @@ deployment:
     - php artisan view:cache
     # Link storage
     - '[ -d storage ] && php artisan storage:link'
-  production:
-    document-root: public
+  post_deploy:
+    - '[ -f artisan ] && php artisan storage:link'
