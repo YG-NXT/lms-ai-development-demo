@@ -1,22 +1,21 @@
 ---
 deployment:
   tasks:
-    
-    pre_deploy:
+    # Ensure .env exists
+    - cp -f .env.example .env
+    # Generate app key if needed
+    - php artisan key:generate --force
     # Install PHP dependencies
     - composer install --no-dev --prefer-dist --optimize-autoloader
-    # Clear stale caches
-    - php artisan clear-compiled
+    # Clear caches
     - php artisan config:clear
     - php artisan route:clear
     - php artisan view:clear
-    # Run database migrations
-    - '[ -f artisan ] && php artisan migrate --force'
+    # Run migrations
+    - php artisan migrate --force
     # Cache for performance
     - php artisan config:cache
     - php artisan route:cache
     - php artisan view:cache
-    # Link storage
-    - '[ -d storage ] && php artisan storage:link'
-  post_deploy:
-    - '[ -f artisan ] && php artisan storage:link'
+  production:
+    document-root: public
