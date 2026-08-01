@@ -1,0 +1,29 @@
+---
+deployment:
+  tasks:
+    # Optimize the autoloader for production
+    - composer install --no-dev --prefer-dist --optimize-autoloader
+    
+    # Clear any cached config/routes/views for stale data
+    - php artisan clear-compiled
+    - php artisan config:clear
+    - php artisan route:clear
+    - php artisan view:clear
+    
+    # Run database migrations (non-destructive on deploy)
+    - '[ -f "artisan" ] && php artisan migrate --force'
+    
+    # Cache configs and routes for performance
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
+  production:
+    document-root: public
+environment:
+  development:
+    APP_ENV: local
+    APP_DEBUG: true
+    APP_KEY: base64:
+  production:
+    APP_ENV: production
+    APP_DEBUG: false
