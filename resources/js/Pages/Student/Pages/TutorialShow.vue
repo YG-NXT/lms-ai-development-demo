@@ -12,11 +12,6 @@ defineProps<{
     enrollment?: any;
 }>();
 
-defineProps<{
-    tutorial: any;
-    enrollment?: any;
-}>();
-
 const isEnrolled = !!props.enrollment;
 const activeSection = ref(0);
 const activeLesson = ref(0);

@@ -40,7 +40,7 @@ defineProps<{
                                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ reminder.type }} &middot; {{ new Date(reminder.reminder_at).toLocaleString() }}</p>
                             </div>
                         </div>
-                        <form :action="student.reminders.destroy.url(reminder.id)" method="POST" @submit.prevent="if(confirm('Delete this reminder?')) $event.target.submit()">
+                        <form :action="student.reminders.destroy.url(reminder.id)" method="POST" @submit.prevent="confirm('Delete this reminder?') && $event.target.submit()">
                             <button type="submit" class="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20">
                                 <Trash2 :size="16" />
                             </button>

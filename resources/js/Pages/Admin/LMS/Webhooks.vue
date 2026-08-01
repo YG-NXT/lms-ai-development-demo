@@ -70,7 +70,7 @@ const formatEvents = (events: string[] | null) => {
                                         >
                                             Edit
                                         </Link>
-                                        <form :action="admin.webhooks.destroy.url(webhook.id)" method="POST" class="inline" @submit.prevent="if(confirm('Delete this webhook?')) $event.target.submit()">
+                                        <form :action="admin.webhooks.destroy.url(webhook.id)" method="POST" class="inline" @submit.prevent="confirm('Delete this webhook?') && $event.target.submit()">
                                             <button type="submit" class="text-sm font-medium text-rose-600 hover:text-rose-700">
                                                 <Trash2 :size="14" />
                                             </button>

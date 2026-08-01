@@ -96,7 +96,7 @@ const getTypeInfo = (type: string) => {
                                         >
                                             Edit
                                         </Link>
-                                        <form :action="admin.coupons.destroy.url(coupon.id)" method="POST" class="inline" @submit.prevent="if(confirm('Delete this coupon?')) $event.target.submit()">
+                                        <form :action="admin.coupons.destroy.url(coupon.id)" method="POST" class="inline" @submit.prevent="confirm('Delete this coupon?') && $event.target.submit()">
                                             <button type="submit" class="text-sm font-medium text-rose-600 hover:text-rose-700">
                                                 <Trash2 :size="14" />
                                             </button>

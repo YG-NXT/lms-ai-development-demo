@@ -35,7 +35,7 @@ defineProps<{
                                 <p class="text-sm text-slate-500 dark:text-slate-400">Position #{{ entry.position }}</p>
                             </div>
                         </div>
-                        <form :action="student.waitlist.destroy.url(entry.id)" method="POST" @submit.prevent="if(confirm('Leave this waitlist?')) $event.target.submit()">
+                        <form :action="student.waitlist.destroy.url(entry.id)" method="POST" @submit.prevent="confirm('Leave this waitlist?') && $event.target.submit()">
                             <button type="submit" class="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500">
                                 <X :size="16" />
                             </button>

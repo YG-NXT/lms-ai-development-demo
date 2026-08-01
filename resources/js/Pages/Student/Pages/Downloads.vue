@@ -44,7 +44,7 @@ defineProps<{
                                 Download
                             </Link>
                             <span v-else class="text-xs text-gray-400">Expired</span>
-                            <form :action="student.downloads.destroy.url(download.id)" method="POST" @submit.prevent="if(confirm('Revoke this download?')) $event.target.submit()">
+                            <form :action="student.downloads.destroy.url(download.id)" method="POST" @submit.prevent="confirm('Revoke this download?') && $event.target.submit()">
                                 <button type="submit" class="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500">
                                     <Trash2 :size="16" />
                                 </button>
