@@ -13,18 +13,16 @@ if (! function_exists('business_config')) {
      */
     function business_config($key, $default = null)
     {
-        // Cache settings for performance, clear on update
-        // Using a short cache time or forever with clearing events is fine.
-        // For simplicity, let's query DB directly or use a simple static cache if request-scoped,
-        // but DB query cache is better.
-
-        // Let's use a simple static cache within the request to avoid repeated DB calls for the same key
         static $settings = null;
 
         if ($settings === null) {
-            $settings = Cache::remember('business_settings_all', 60 * 24, function () {
-                return BusinessSetting::all()->pluck('value', 'key')->toArray();
-            });
+            try {
+                $settings = Cache::remember('business_settings_all', 60 * 24, function () {
+                    return BusinessSetting::all()->pluck('value', 'key')->toArray();
+                });
+            } catch (\Exception $e) {
+                $settings = [];
+            }
         }
 
         return $settings[$key] ?? $default;
