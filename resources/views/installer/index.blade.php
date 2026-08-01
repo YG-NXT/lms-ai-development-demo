@@ -23,7 +23,7 @@
         @csrf
 
         <div class="space-y-8">
-            {{-- Application Settings }}
+            {{-- Application Settings --}}
             <div>
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Application Settings</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
