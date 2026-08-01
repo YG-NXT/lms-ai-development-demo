@@ -1,4 +1,4 @@
-const CACHE_NAME = '6am-lms-v1';
+const CACHE_NAME = 'yg-softx';
 const ASSETS_TO_CACHE = [
     '/',
     '/manifest.json',
