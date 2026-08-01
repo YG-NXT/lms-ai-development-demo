@@ -14,6 +14,8 @@ type UrlDefaults = Record<string, unknown>;
 
 let urlDefaults: () => UrlDefaults = () => ({});
 
+let adminPath: string | null = null;
+
 export type RouteDefinition<TMethod extends Method | Method[]> = {
     url: string;
 } & (TMethod extends Method[] ? { methods: TMethod } : { method: TMethod });
@@ -26,6 +28,25 @@ export type RouteFormDefinition<TMethod extends Method> = {
 export type RouteQueryOptions = {
     query?: QueryParams;
     mergeQuery?: QueryParams;
+};
+
+export const setAdminPath = (path: string): void => {
+    adminPath = path;
+};
+
+const applyAdminPath = (url: string): string => {
+    if (! adminPath || adminPath === 'admin') {
+        return url;
+    }
+
+    if (url.startsWith('/admin/')) {
+        return '/' + adminPath + url.substring('/admin/'.length);
+    }
+    if (url === '/admin') {
+        return '/' + adminPath;
+    }
+
+    return url;
 };
 
 const getValue = (value: string | number | boolean) => {
@@ -139,6 +160,60 @@ export const applyUrlDefaults = <T extends UrlDefaults | undefined>(
     }
 
     return existingParams as T;
+};
+
+export const patchAdminRoutes = (routesModule: Record<string, any>): void => {
+    if (! adminPath) return;
+
+    const patchRoute = (route: any) => {
+        if (! route || typeof route !== 'object') return;
+
+        if (route.definition && typeof route.definition === 'object') {
+            route.definition.url = applyAdminPath(route.definition.url);
+        }
+
+        if (route.url && typeof route.url === 'function') {
+            const originalUrlFn = route.url;
+            route.url = (options?: RouteQueryOptions) => {
+                return applyAdminPath(originalUrlFn(options));
+            };
+        }
+
+        if (route.definition && Array.isArray(route.definition.methods)) {
+            const methods = ['get', 'head', 'post', 'put', 'patch', 'delete'];
+            methods.forEach((method) => {
+                if (typeof route[method] === 'function') {
+                    const original = route[method];
+                    route[method] = (options?: RouteQueryOptions) => {
+                        const result = original(options);
+                        if (result && typeof result === 'object' && 'url' in result) {
+                            result.url = applyAdminPath(result.url as string);
+                        }
+                        return result;
+                    };
+                }
+            });
+        }
+
+        const formMethods = ['form'];
+        formMethods.forEach((prop) => {
+            if (route[prop] && typeof route[prop] === 'object') {
+                patchRoute(route[prop]);
+            }
+        });
+
+        Object.keys(route).forEach((key) => {
+            if (key !== 'definition' && key !== 'url' && typeof route[key] === 'object' && route[key] !== null) {
+                patchRoute(route[key]);
+            }
+        });
+    };
+
+    Object.keys(routesModule).forEach((key) => {
+        if (key !== 'default') {
+            patchRoute(routesModule[key]);
+        }
+    });
 };
 
 export const validateParameters = (

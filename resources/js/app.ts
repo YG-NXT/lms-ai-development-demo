@@ -7,6 +7,16 @@ import '../css/app.css';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 import { wTrans } from './Core/i18n';
+import { setAdminPath, patchAdminRoutes } from './wayfinder/index';
+import adminRoutes from './routes/admin';
+
+// Patch admin route URLs with the configured admin path
+const adminPathMeta = document.querySelector('meta[name="admin-path"]');
+const adminPath = adminPathMeta ? adminPathMeta.getAttribute('content') : 'admin';
+if (adminPath && adminPath !== 'admin') {
+    setAdminPath(adminPath);
+    patchAdminRoutes(adminRoutes);
+}
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -16,6 +26,7 @@ createInertiaApp({
 
         app.config.globalProperties.__ = wTrans;
         app.config.globalProperties.trans = wTrans;
+        app.config.globalProperties.$adminPath = adminPath;
 
         // Register service worker for PWA
         if ('serviceWorker' in navigator && import.meta.env.PROD) {

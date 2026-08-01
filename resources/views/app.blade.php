@@ -10,6 +10,7 @@
         <meta name="theme-color" content="#4f46e5" />
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="admin-path" content="{{ config('installer.admin_path', 'admin') }}">
 
         @php
             $favicon = business_config('favicon_url');

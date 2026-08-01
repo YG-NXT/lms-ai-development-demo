@@ -10,7 +10,7 @@ class CheckInstalled
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $installed = env('APP_INSTALLED', false);
+        $installed = config('installer.installed', false);
 
         if (! $installed && ! $request->is('install*')) {
             return redirect()->route('install');

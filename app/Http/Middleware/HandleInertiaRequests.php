@@ -97,6 +97,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' => fn () => $request->session()->get('warning'),
             ],
             'admin' => [
+                'path' => config('installer.admin_path', 'admin'),
                 'pending_enrollments_count' => $user && ($user->isSuperAdmin() || $user->can('enrollment_management'))
                     ? \App\Models\Enrollment::where('status', \App\Enums\EnrollmentStatus::PENDING)->count()
                     : 0,

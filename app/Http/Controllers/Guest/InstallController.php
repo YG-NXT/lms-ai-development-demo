@@ -11,9 +11,15 @@ use Illuminate\Support\Facades\Hash;
 
 class InstallController extends Controller
 {
+    protected array $requirements = [
+        'php' => '8.2',
+        'extensions' => ['pdo', 'mbstring', 'openssl', 'json', 'ctype', 'xml', 'fileinfo', 'curl'],
+        'writable' => ['storage', 'bootstrap/cache'],
+    ];
+
     public function index()
     {
-        if (env('APP_INSTALLED', false)) {
+        if (config('installer.installed', false)) {
             return redirect('/');
         }
 
@@ -22,7 +28,7 @@ class InstallController extends Controller
 
     public function install(Request $request)
     {
-        if (env('APP_INSTALLED', false)) {
+        if (config('installer.installed', false)) {
             return redirect('/');
         }
 
@@ -45,12 +51,11 @@ class InstallController extends Controller
         }
 
         try {
-            $this->updateEnv($validated, setInstalled: false);
+            $this->updateEnv($validated, false);
 
             Artisan::call('config:clear');
             Artisan::call('migrate:fresh', ['--force' => true]);
 
-            // Create admin user after migrations
             $role = Role::where('name', 'superadmin')->first();
 
             $admin = User::updateOrCreate(
@@ -67,9 +72,9 @@ class InstallController extends Controller
                 $admin->roles()->sync([$role->id]);
             }
 
-            // Mark as installed now that everything succeeded
-            $this->updateEnv($validated, setInstalled: true);
-
+            // Mark as installed
+            $this->updateEnv($validated, true);
+            Artisan::call('config:cache');
             cache()->flush();
 
             return redirect()->route('install.success')
@@ -82,25 +87,21 @@ class InstallController extends Controller
 
     public function success()
     {
-        if (! env('APP_INSTALLED', false)) {
-            return redirect()->route('install');
-        }
-
         return view('installer.success');
     }
 
     protected function checkRequirements(): array
     {
-        $phpOk = version_compare(PHP_VERSION, '8.2') >= 0;
+        $phpOk = version_compare(PHP_VERSION, $this->requirements['php']) >= 0;
 
         $extensions = [];
-        foreach (['pdo', 'mbstring', 'openssl', 'json', 'ctype', 'xml', 'fileinfo', 'curl'] as $ext) {
+        foreach ($this->requirements['extensions'] as $ext) {
             $extensions[$ext] = extension_loaded($ext);
         }
         $extensionOk = ! in_array(false, $extensions, true);
 
         $writable = [];
-        foreach (['storage', 'bootstrap/cache'] as $dir) {
+        foreach ($this->requirements['writable'] as $dir) {
             $path = base_path($dir);
             $writable[$dir] = is_writable($path);
         }
@@ -117,12 +118,12 @@ class InstallController extends Controller
         ];
     }
 
-    protected function updateEnv(array $data, bool $setInstalled = false): void
+    protected function updateEnv(array $data, bool $setInstalled): void
     {
         $envPath = base_path('.env');
         $envContent = file_exists($envPath) ? file_get_contents($envPath) : '';
 
-        $replacements = [
+        $pairs = [
             'APP_URL' => $data['app_url'],
             'DB_HOST' => $data['database_host'],
             'DB_PORT' => $data['database_port'],
@@ -133,19 +134,15 @@ class InstallController extends Controller
         ];
 
         if ($setInstalled) {
-            $replacements['APP_INSTALLED'] = 'true';
+            $pairs['APP_INSTALLED'] = 'true';
         }
 
-        foreach ($replacements as $key => $value) {
+        foreach ($pairs as $key => $value) {
             if (str_contains($envContent, $key.'=')) {
                 $envContent = preg_replace('/^'.$key.'=.*/m', $key.'='.$value, $envContent);
             } else {
                 $envContent .= "\n".$key.'='.$value."\n";
             }
-        }
-
-        if ($setInstalled && ! str_contains($envContent, 'APP_INSTALLED=')) {
-            $envContent .= "\nAPP_INSTALLED=true\n";
         }
 
         file_put_contents($envPath, $envContent);
