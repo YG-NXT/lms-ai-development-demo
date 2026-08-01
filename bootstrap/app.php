@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckInstalled;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,7 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            $adminPath = config('installer.admin_path', 'admin');
+
             Route::middleware('web')
+                ->group(base_path('routes/install.php'));
+
+            Route::middleware('web')
+                ->prefix($adminPath)
+                ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
             Route::middleware('web')
@@ -30,6 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleRtl::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            CheckInstalled::class,
         ]);
 
         $middleware->alias([
@@ -37,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'super-admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'customer' => \App\Http\Middleware\CustomerMiddleware::class,
+            'installed' => CheckInstalled::class,
         ]);
     })
     ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {

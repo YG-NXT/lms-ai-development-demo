@@ -8,14 +8,14 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('login', [AuthController::class, 'storeLogin']);
     Route::get('register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('register', [AuthController::class, 'storeRegister']);
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class);
