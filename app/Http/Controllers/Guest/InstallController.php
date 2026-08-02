@@ -35,10 +35,10 @@ class InstallController extends Controller
         $validated = $request->validate([
             'app_url' => 'required|url',
             'admin_path' => 'required|string|max:50',
-            'database_host' => 'required|string',
-            'database_port' => 'required|numeric',
+            'database_host' => 'nullable|string',
+            'database_port' => 'nullable|numeric',
             'database_name' => 'required|string',
-            'database_username' => 'required|string',
+            'database_username' => 'nullable|string',
             'database_password' => 'nullable|string',
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|email|max:255',
@@ -130,13 +130,22 @@ class InstallController extends Controller
 
         $pairs = [
             'APP_URL' => $data['app_url'],
-            'DB_HOST' => $data['database_host'],
-            'DB_PORT' => $data['database_port'],
             'DB_DATABASE' => $data['database_name'],
-            'DB_USERNAME' => $data['database_username'],
-            'DB_PASSWORD' => $data['database_password'] ?? '',
             'ADMIN_PATH' => $data['admin_path'],
         ];
+
+        if (! empty($data['database_host'])) {
+            $pairs['DB_HOST'] = $data['database_host'];
+        }
+        if (! empty($data['database_port'])) {
+            $pairs['DB_PORT'] = $data['database_port'];
+        }
+        if (! empty($data['database_username'])) {
+            $pairs['DB_USERNAME'] = $data['database_username'];
+        }
+        if (! empty($data['database_password'])) {
+            $pairs['DB_PASSWORD'] = $data['database_password'];
+        }
 
         if ($setInstalled) {
             $pairs['APP_INSTALLED'] = 'true';

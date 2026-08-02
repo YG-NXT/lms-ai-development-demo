@@ -35,10 +35,7 @@ class InstallControllerTest extends TestCase
             ->post('/install', [
                 'app_url' => 'not-a-url',
                 'admin_path' => '',
-                'database_host' => '',
-                'database_port' => 'not-a-number',
                 'database_name' => '',
-                'database_username' => '',
                 'admin_name' => '',
                 'admin_email' => 'not-an-email',
                 'admin_password' => 'short',
@@ -49,10 +46,7 @@ class InstallControllerTest extends TestCase
         $response->assertSessionHasErrors([
             'app_url',
             'admin_path',
-            'database_host',
-            'database_port',
             'database_name',
-            'database_username',
             'admin_name',
             'admin_email',
             'admin_password',

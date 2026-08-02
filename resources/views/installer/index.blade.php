@@ -53,31 +53,28 @@
                 <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Database Configuration</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Host</label>
-                        <input type="text" name="database_host" value="localhost"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                               required>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Host (optional for SQLite)</label>
+                        <input type="text" name="database_host" value="127.0.0.1"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Port</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Port (optional for SQLite)</label>
                         <input type="number" name="database_port" value="3306"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                               required>
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Name *</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Name / Path *</label>
                         <input type="text" name="database_name"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                required>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Username *</label>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Username (optional for SQLite)</label>
                         <input type="text" name="database_username"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                               required>
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Password</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Database Password (optional for SQLite)</label>
                         <input type="password" name="database_password"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                autocomplete="new-password">
