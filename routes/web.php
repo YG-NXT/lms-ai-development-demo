@@ -54,22 +54,4 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/subscriptions/cancel', [App\Http\Controllers\Student\SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
         Route::post('/subscriptions/update/{plan:slug}', [App\Http\Controllers\Student\SubscriptionController::class, 'update'])->name('subscriptions.update');
     });
-    
-    // Admin Panel - Ad Management
-    Route::prefix('admin')->name('admin.')->middleware('can:manage-ads')->group(function () {
-        Route::resource('ads', App\Http\Controllers\Admin\AdManagementController::class);
-        Route::post('ads/{adZone}/toggle', [App\Http\Controllers\Admin\AdManagementController::class, 'toggle'])->name('ads.toggle');
-        Route::post('ads/settings', [App\Http\Controllers\Admin\AdManagementController::class, 'updateSettings'])->name('ads.settings.update');
-        Route::get('ads/analytics', [App\Http\Controllers\Admin\AdManagementController::class, 'analytics'])->name('ads.analytics');
-        
-        // API endpoint for tracking impressions
-        Route::post('api/ads/track', [App\Http\Controllers\Admin\AdManagementController::class, 'trackImpression'])->name('api.ads.track');
-    });
-    
-    // Admin Panel - Subscription Plans Management
-    Route::prefix('admin')->name('admin.')->middleware('can:manage-subscriptions')->group(function () {
-        Route::resource('subscriptions', App\Http\Controllers\Admin\SubscriptionPlanController::class)->except(['show']);
-        Route::post('subscriptions/{subscriptionPlan}/toggle', [App\Http\Controllers\Admin\SubscriptionPlanController::class, 'toggle'])->name('subscriptions.toggle');
-        Route::post('subscriptions/sort', [App\Http\Controllers\Admin\SubscriptionPlanController::class, 'updateSort'])->name('subscriptions.sort');
-    });
 });

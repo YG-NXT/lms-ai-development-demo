@@ -130,4 +130,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('co-instructors/{course}', [\App\Http\Controllers\Admin\CoInstructorController::class, 'show'])->name('co-instructors.show');
     Route::post('co-instructors/{course}/attach', [\App\Http\Controllers\Admin\CoInstructorController::class, 'attach'])->name('co-instructors.attach');
     Route::delete('co-instructors/{course}/{instructor}', [\App\Http\Controllers\Admin\CoInstructorController::class, 'detach'])->name('co-instructors.detach');
+
+    // Admin Panel - Ad Management
+    Route::middleware('can:manage-ads')->group(function () {
+        Route::resource('ads', \App\Http\Controllers\Admin\AdManagementController::class);
+        Route::post('ads/{adZone}/toggle', [\App\Http\Controllers\Admin\AdManagementController::class, 'toggle'])->name('ads.toggle');
+        Route::post('ads/settings', [\App\Http\Controllers\Admin\AdManagementController::class, 'updateSettings'])->name('ads.settings.update');
+        Route::get('ads/analytics', [\App\Http\Controllers\Admin\AdManagementController::class, 'analytics'])->name('ads.analytics');
+        Route::post('api/ads/track', [\App\Http\Controllers\Admin\AdManagementController::class, 'trackImpression'])->name('api.ads.track');
+    });
+
+    // Admin Panel - Subscription Plans Management
+    Route::middleware('can:manage-subscriptions')->group(function () {
+        Route::resource('subscriptions', \App\Http\Controllers\Admin\SubscriptionPlanController::class)->except(['show']);
+        Route::post('subscriptions/{subscriptionPlan}/toggle', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'toggle'])->name('subscriptions.toggle');
+        Route::post('subscriptions/sort', [\App\Http\Controllers\Admin\SubscriptionPlanController::class, 'updateSort'])->name('subscriptions.sort');
+    });
 });
