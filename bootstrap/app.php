@@ -31,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         if (! config('installer.installed', false)) {
             config(['session.driver' => 'file']);
+            config(['cache.store' => 'file']);
+            config(['queue.default' => 'sync']);
         }
 
         $middleware->validateCsrfTokens(except: [

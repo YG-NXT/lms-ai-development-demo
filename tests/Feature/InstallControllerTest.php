@@ -80,6 +80,12 @@ class InstallControllerTest extends TestCase
         putenv('SESSION_DRIVER=database');
         $_ENV['SESSION_DRIVER'] = 'database';
         $_SERVER['SESSION_DRIVER'] = 'database';
+        putenv('CACHE_STORE=database');
+        $_ENV['CACHE_STORE'] = 'database';
+        $_SERVER['CACHE_STORE'] = 'database';
+        putenv('QUEUE_CONNECTION=database');
+        $_ENV['QUEUE_CONNECTION'] = 'database';
+        $_SERVER['QUEUE_CONNECTION'] = 'database';
 
         $this->refreshApplication();
 
